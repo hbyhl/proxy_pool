@@ -89,23 +89,25 @@ public class RegularHisTestService implements Runnable {
     		log.info("<proxy:RegularHisTestService> res ProxyPoolHis List is " + proxyHisList.size());
         	
         	int len = proxyHisList.size()/threadNum + 1;
-        	Thread thrlist[] = new Thread[threadNum];
+        	//Thread thrlist[] = new Thread[threadNum];
         	
     		if(len != 0) {
         		int x=0, count=0;
             	for(ProxyPoolHis proxyHis : proxyHisList){
         			if(x!=0 && x<len*threadNum){
         				if(x%len ==0){
-        					thrlist[count] = new Thread(this);
-        					fixedThreadPool.execute(thrlist[count]);
+        					//thrlist[count] = new Thread(this);
+        					//fixedThreadPool.execute(thrlist[count]);
+        				    fixedThreadPool.execute(this);
         			    	count++;
         				}
         			}
         			allKeyMap.get(count).add(proxyHis);
         			x ++;
         		}
-            	thrlist[count] = new Thread(this);
-            	fixedThreadPool.execute(thrlist[count]);
+            	//thrlist[count] = new Thread(this);
+            	//fixedThreadPool.execute(thrlist[count]);
+            	fixedThreadPool.execute(this);
     	    	count++;
     	    	fixedThreadPool.shutdown();
         	}

@@ -76,11 +76,9 @@
        		<property name="waitForJobsToCompleteOnShutdown" value="true" />
     	</bean>
     
-		<bean id="regularHisObject" class="cn.focus.proxypool.impl.RegularHisTestService" />
-		
 		<bean id="regularHisDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		 <!-- 	<property name="concurrent" value="false"/>  -->
- 			<property name="targetObject" ref="regularHisObject" />
+ 			<property name="targetObject" ref="regularHisTestService" />
  			<property name="targetMethod" value="doExchange" />
 		</bean>
 		
@@ -89,10 +87,8 @@
  			<property name="cronExpression" value="0 0,10,20,30,40,50 * * * ?" />
 		</bean>
 		
-		 <bean id="regularObject" class="cn.focus.proxypool.impl.RegularTestService" />
-		
 		<bean id="regularDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
- 			<property name="targetObject" ref="regularObject" />
+ 			<property name="targetObject" ref="regularTestService" />
  			<property name="targetMethod" value="doRegularTest" />
 		</bean>
 		
@@ -124,12 +120,9 @@
        		<property name="threadNamePrefix" value="DataForIndexOperation" />
        		<property name="waitForJobsToCompleteOnShutdown" value="true" />
     	</bean>
-    
-		<bean id="regularHisObject" class="cn.focus.proxypool.impl.RegularHisTestService" />
 		
 		<bean id="regularHisDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<!-- 	<property name="concurrent" value="false"/>  -->
- 			<property name="targetObject" ref="regularHisObject" />
+ 			<property name="targetObject" ref="regularHisTestService" />
  			<property name="targetMethod" value="doExchange" />
 		</bean>
 		
@@ -138,10 +131,8 @@
  			<property name="cronExpression" value="0 0 0,2,4,6,8,10,12,14,16,18,20,22 * * ?" />
 		</bean>
 		
-		 <bean id="regularObject" class="cn.focus.proxypool.impl.RegularTestService" />
-		
 		<bean id="regularDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
- 			<property name="targetObject" ref="regularObject" />
+ 			<property name="targetObject" ref="regularTestService" />
  			<property name="targetMethod" value="doRegularTest" />
 		</bean>
 		

@@ -67,22 +67,24 @@ public class RegularTestService implements Runnable {
 	    	log.info("<proxy:RegularTestService> res ProxyPool List is " + proxyList.size());
 	    	
 	    	int len = proxyList.size()/threadNum + 1;
-	    	Thread thrlist[] = new Thread[threadNum];
+	    	//Thread thrlist[] = new Thread[threadNum];
 	    	if(len != 0) {
 	    		int x=0, count=0;
 	        	for(ProxyPool proxy : proxyList){
 	    			if(x!=0 && x<len*threadNum){
 	    				if(x%len ==0){
-	    					thrlist[count] = new Thread(this);
-	    					fixedThreadPool.execute(thrlist[count]);
+	    					//thrlist[count] = new Thread(this);
+	    					//fixedThreadPool.execute(thrlist[count]);
+	    				    fixedThreadPool.execute(this);
 	    			    	count++;
 	    				}
 	    			}
 	    			allKeyMap.get(count).add(proxy);
 	    			x ++;
 	    		}
-	        	thrlist[count] = new Thread(this);
-	        	fixedThreadPool.execute(thrlist[count]);
+	        	//thrlist[count] = new Thread(this);
+	        	//fixedThreadPool.execute(thrlist[count]);
+	        	fixedThreadPool.execute(this);
 		    	count++;
 		    	fixedThreadPool.shutdown();
 	    	}
