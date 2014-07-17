@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+       
+    
+	
+	<!--  <beans profile="test">
+	
+		<bean id="regularTestJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+			<property name="jobClass">
+				<value>cn.focus.proxypool.quartz.DetailQuartzJobBean</value>
+			</property>
+			<property name="jobDataAsMap">
+		        <map>   
+			        <entry key="targetObject" value="regularTestService" />   
+		            <entry key="targetMethod" value="doRegularTest" />   
+		   		</map>   
+	   		 </property>   
+		</bean> 
+		
+		<bean id="regularTestTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+			<property name="jobDetail">
+				<ref bean="regularTestJob"/>
+			</property>
+			<property name="cronExpression"> 
+		 		<value>0 0/8 * * * ?</value> 
+			</property>
+		</bean> 
+	
+	    <bean id="regularHisTestJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+			<property name="jobClass">
+				<value>cn.focus.proxypool.quartz.DetailQuartzJobBean</value>
+			</property>
+			<property name="jobDataAsMap">
+		        <map>   
+			        <entry key="targetObject" value="regularHisTestService" />   
+		            <entry key="targetMethod" value="doExchange" />   
+		   		</map>   
+	   		 </property>   
+		</bean> 
+		
+		<bean id="regularHisTestTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+			<property name="jobDetail">
+				<ref bean="regularHisTestJob"/>
+			</property>
+			<property name="cronExpression"> 
+		 		<value>0 0/5 * * * ?</value> 
+			</property>
+		</bean> 
+		
+		<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">	
+			<property name="dataSource"><ref bean="proxy"/></property>
+			<property name="applicationContextSchedulerContextKey" value="applicationContextKey" />
+			<property name="overwriteExistingJobs" value="true"/>   	
+					
+			<property name="configLocation" value="classpath:quartz.properties"/>
+		    <property name="startupDelay" value="1"/>
+		 	<property name="triggers">
+				<list>
+				   <ref bean="regularTestTrigger" />
+				   <ref bean="regularHisTestTrigger" />   
+				</list>
+			</property>
+		</bean>
+	</beans> -->
+	
+	<beans profile="test">
+		
+		<bean id="simpleThreadPoolTaskExecutor"
+       			class="org.springframework.scheduling.quartz.SimpleThreadPoolTaskExecutor">
+       		<property name="makeThreadsDaemons" value="true" />
+       		<property name="threadCount" value="1" />
+       		<property name="threadNamePrefix" value="DataForIndexOperation" />
+       		<property name="waitForJobsToCompleteOnShutdown" value="true" />
+    	</bean>
+    
+		<bean id="regularHisObject" class="cn.focus.proxypool.impl.RegularHisTestService" />
+		
+		<bean id="regularHisDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		 <!-- 	<property name="concurrent" value="false"/>  -->
+ 			<property name="targetObject" ref="regularHisObject" />
+ 			<property name="targetMethod" value="doExchange" />
+		</bean>
+		
+		<bean id="regularHisTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+ 			<property name="jobDetail" ref="regularHisDetail" />
+ 			<property name="cronExpression" value="0 0,10,20,30,40,50 * * * ?" />
+		</bean>
+		
+		 <bean id="regularObject" class="cn.focus.proxypool.impl.RegularTestService" />
+		
+		<bean id="regularDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+ 			<property name="targetObject" ref="regularObject" />
+ 			<property name="targetMethod" value="doRegularTest" />
+		</bean>
+		
+		<bean id="regularTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+ 			<property name="jobDetail" ref="regularDetail" />
+ 			<property name="cronExpression" value="0 5,15,25,35,45,55 * * * ?" />
+		</bean> 
+		
+		<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+ 			<property name="triggers">
+  				<list>
+   					<ref bean="regularHisTrigger" />
+   					<ref bean="regularTrigger" /> 
+  				</list>
+ 			</property>
+ 		  	<property name="taskExecutor">
+           		<ref bean="simpleThreadPoolTaskExecutor"/>
+      	 	</property>
+		</bean>
+		
+	</beans> 
+	
+	<beans profile="product">
+	
+		<bean id="simpleThreadPoolTaskExecutor"
+       			class="org.springframework.scheduling.quartz.SimpleThreadPoolTaskExecutor">
+       		<property name="makeThreadsDaemons" value="true" />
+       		<property name="threadCount" value="1" />
+       		<property name="threadNamePrefix" value="DataForIndexOperation" />
+       		<property name="waitForJobsToCompleteOnShutdown" value="true" />
+    	</bean>
+    
+		<bean id="regularHisObject" class="cn.focus.proxypool.impl.RegularHisTestService" />
+		
+		<bean id="regularHisDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 	<property name="concurrent" value="false"/>  -->
+ 			<property name="targetObject" ref="regularHisObject" />
+ 			<property name="targetMethod" value="doExchange" />
+		</bean>
+		
+		<bean id="regularHisTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+ 			<property name="jobDetail" ref="regularHisDetail" />
+ 			<property name="cronExpression" value="0 0 0,2,4,6,8,10,12,14,16,18,20,22 * * ?" />
+		</bean>
+		
+		 <bean id="regularObject" class="cn.focus.proxypool.impl.RegularTestService" />
+		
+		<bean id="regularDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+ 			<property name="targetObject" ref="regularObject" />
+ 			<property name="targetMethod" value="doRegularTest" />
+		</bean>
+		
+		<bean id="regularTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+ 			<property name="jobDetail" ref="regularDetail" />
+			<property name="cronExpression" value="0 15,45 * * * ?" />
+		</bean> 
+		
+		<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+ 			<property name="triggers">
+  				<list>
+   					<ref bean="regularHisTrigger" />
+   					<ref bean="regularTrigger" /> 
+  				</list>
+ 			</property>
+ 		  	<property name="taskExecutor">
+           		<ref bean="simpleThreadPoolTaskExecutor"/>
+      	 	</property>
+		</bean>
+	
+	</beans> 
+
+</beans>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<beans profile="product">
+		<bean id="jade.dataSource.focus.proxy"
+			class="net.paoding.rose.jade.dataaccess.datasource.MasterSlaveDataSourceFactory">
+			<constructor-arg index="0">
+				<ref bean="proxy" />
+			</constructor-arg>
+			<constructor-arg index="1">
+				<ref bean="proxy" />
+			</constructor-arg>
+			<constructor-arg index="2">
+				<value>false</value>
+			</constructor-arg>
+		</bean>
+		<bean id="proxy" class="org.apache.commons.dbcp.BasicDataSource"
+			destroy-method="close">
+			<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+			<property name="url"
+				value="jdbc:mysql://10.10.90.156:3306/crawl_data?useUnicode=true&amp;characterEncoding=UTF8&amp;autoReconnect=true&amp;autoReconnectForPools=true&amp;zeroDateTimeBehavior=convertToNull" />
+			<property name="username" value="develop" />
+			<property name="password" value="p3m12d" />
+			<property name="maxActive" value="20" />
+			<property name="maxIdle" value="20" />
+			<property name="maxWait" value="1000" />
+			<property name="testOnBorrow" value="true" />
+			<property name="testWhileIdle" value="true" />
+			<property name="removeAbandoned" value="true" />
+			<property name="removeAbandonedTimeout" value="1000" />
+			<property name="validationQuery" value="select 1" />
+			<property name="poolPreparedStatements" value="true" />
+			<property name="defaultAutoCommit" value="true" />
+		</bean>
+	</beans>
+	
+	<beans profile="test">
+		<bean id="jade.dataSource.focus.proxy"
+			class="net.paoding.rose.jade.dataaccess.datasource.RandomDataSourceFactory">
+			<constructor-arg index="0">
+				<ref bean="proxy" />
+			</constructor-arg>
+		</bean>
+		<bean id="proxy" class="org.apache.commons.dbcp.BasicDataSource"
+			destroy-method="close">
+			<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+			<property name="url"
+				value="jdbc:mysql://10.10.90.156:3306/crawl_data?useUnicode=true&amp;characterEncoding=UTF8&amp;autoReconnect=true&amp;autoReconnectForPools=true&amp;zeroDateTimeBehavior=convertToNull" />
+			<property name="username" value="develop" />
+			<property name="password" value="p3m12d" />
+			<property name="maxActive" value="100" />
+			<property name="maxIdle" value="100" />
+			<property name="maxWait" value="1000" />
+			<property name="testOnBorrow" value="true" />
+			<property name="testWhileIdle" value="true" />
+			<property name="removeAbandoned" value="true" />
+			<property name="removeAbandonedTimeout" value="1000" />
+			<property name="validationQuery" value="select 1" />
+			<property name="poolPreparedStatements" value="true" />
+			<property name="defaultAutoCommit" value="true" />
+		</bean>
+	</beans>
+
+    <!-- <beans profile="test">
+		<bean id="jade.dataSource.focus.proxy"
+			class="net.paoding.rose.jade.dataaccess.datasource.MasterSlaveDataSourceFactory">
+			<constructor-arg index="0">
+				<ref bean="proxy" />
+			</constructor-arg>
+			<constructor-arg index="1">
+				<ref bean="proxy-slave" />
+			</constructor-arg>
+			<constructor-arg index="2">
+				<value>false</value>
+			</constructor-arg>
+		</bean>
+		<bean id="proxy" class="org.apache.commons.dbcp.BasicDataSource"
+			destroy-method="close">
+			<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+			<property name="url"
+				value="jdbc:mysql://10.10.57.223:3306/focus_crawl_data?useUnicode=true&amp;characterEncoding=UTF8&amp;autoReconnect=true&amp;autoReconnectForPools=true&amp;zeroDateTimeBehavior=convertToNull" />
+			<property name="username" value="focus_crawl_data" />
+			<property name="password" value="M8Kuot_ADuJHaq1" />
+			<property name="maxActive" value="100" />
+			<property name="maxIdle" value="100" />
+			<property name="maxWait" value="1000" />
+			<property name="testOnBorrow" value="true" />
+			<property name="testWhileIdle" value="true" />
+			<property name="removeAbandoned" value="true" />
+			<property name="removeAbandonedTimeout" value="1000" />
+			<property name="validationQuery" value="select 1" />
+			<property name="poolPreparedStatements" value="true" />
+			<property name="defaultAutoCommit" value="true" />
+		</bean>
+		<bean id="proxy-slave" class="org.apache.commons.dbcp.BasicDataSource"
+			destroy-method="close">
+			<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+			<property name="url"
+				value="jdbc:mysql://10.10.57.224:3306/focus_crawl_data?useUnicode=true&amp;characterEncoding=UTF8&amp;autoReconnect=true&amp;autoReconnectForPools=true&amp;zeroDateTimeBehavior=convertToNull" />
+			<property name="username" value="focus_crawl_data" />
+			<property name="password" value="M8Kuot_ADuJHaq1" />
+			<property name="maxActive" value="100" />
+			<property name="maxIdle" value="100" />
+			<property name="maxWait" value="1000" />
+			<property name="testOnBorrow" value="true" />
+			<property name="testWhileIdle" value="true" />
+			<property name="removeAbandoned" value="true" />
+			<property name="removeAbandonedTimeout" value="1000" />
+			<property name="validationQuery" value="select 1" />
+			<property name="poolPreparedStatements" value="true" />
+			<property name="defaultAutoCommit" value="true" />
+		</bean>
+	</beans>  -->
+</beans>

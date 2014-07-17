@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="shardedRWRedisPoolConfig" class="cn.focus.dc.commons.redis.ShardedRWRedisPoolConfig">
+        <property name="maxActive" value="500"/>
+        <property name="maxIdle" value="200"/>
+        <property name="maxWait" value="1000"/>
+        <property name="testOnBorrow" value="true"/>
+    </bean>
+
+    <bean id="sceRWRedisPoolFactory" class="cn.focus.dc.commons.redis.sce.SCERWRedisPoolFactory">
+        <property name="sceRedisServerListBuilder" ref="sceRedisServerListBuilder"/>
+        <property name="config" ref="shardedRWRedisPoolConfig"/>
+    </bean>
+
+	<bean name="restTemplate" class="org.springframework.web.client.RestTemplate" />
+
+    <beans profile="test">
+        <bean id="sceRedisServerListBuilder" class="cn.focus.dc.commons.redis.sce.SCERedisServerListBuilder">
+            <property name="sceAPIUrl"
+                      value="http://sceapi.apps.sohuno.com/api/redis/release?uid={sceRedisUId}"/>
+            <property name="sceRedisUId" value="1141"/>
+            <property name="masterPassport" value="39e09fa25ad0b0ae7636bea1d9d352b2"/>
+            <property name="slavePassport" value="39e09fa25ad0b0ae7636bea1d9d352b2"/>
+            <property name="restTemplate" ref="focusPassportRestTemplate"/>
+        </bean>
+    </beans>
+
+    <beans profile="product">
+        <bean id="sceRedisServerListBuilder" class="cn.focus.dc.commons.redis.sce.SCERedisServerListBuilder">
+            <property name="sceAPIUrl"
+                      value="http://sceapi.apps.sohuno.com/api/redis/release?uid={sceRedisUId}"/>
+            <property name="sceRedisUId" value="1282"/>
+            <property name="masterPassport" value="b1563fe949bd53cf486408bedc1b9ec4"/>
+            <property name="slavePassport" value="b1563fe949bd53cf486408bedc1b9ec4"/>
+            <property name="restTemplate" ref="focusPassportRestTemplate"/>
+        </bean>
+    </beans> 
+
+</beans>
