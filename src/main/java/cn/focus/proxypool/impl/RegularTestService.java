@@ -119,7 +119,7 @@ public class RegularTestService implements Runnable {
 		List<String> uagentList = userAgentDAO.getAllData();
     	
     	try {
-    		List<ProxyPool> resList = HttpClientUtil.testProxyHttp(proxyList, uagentList);	
+    		List<ProxyPool> resList = HttpClientUtil.testProxyHttp(proxyList, uagentList,1);	
     
     		for(ProxyPool proxyPool : resList) {
     			if(proxyPool.getStatus() == -1) {

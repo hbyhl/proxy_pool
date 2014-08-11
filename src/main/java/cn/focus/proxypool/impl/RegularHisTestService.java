@@ -145,7 +145,11 @@ public class RegularHisTestService implements Runnable {
 			int count = 0;
 			for(ProxyPoolHis proxyHis : proxyHisList) {
 				for(ProxyUrls proxyUrls : urlsList) {
-					int ret = HttpClientUtil.testCommonHttp(proxyHis.getIp(), proxyHis.getPort(), proxyUrls.getName(), uagentList);
+		    	//	int ret = HttpClientUtil.testCommonHttp(proxyHis.getIp(), proxyHis.getPort(), proxyUrls.getName(), uagentList);
+		    	    ProxyPool PL = new ProxyPool();
+		    	    PL.copy(proxyHis);
+		    	    PL.setUrlname(proxyUrls.getName());
+					int ret = HttpClientUtil.testCommonHttp(proxyHis, uagentList,2);
 					ProxyPool proxy = ProxyPool.getInstantce(proxyHis);
 					proxy.setUrlname(proxyUrls.getName());
 					if(ret == 1) {

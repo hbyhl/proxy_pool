@@ -34,8 +34,11 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.log4j.Logger;
 
+import ProxyPool.PropertiesUtil;
+
 import cn.focus.proxypool.model.ProxyPool;
 import cn.focus.proxypool.vo.UrlsVo;
+import cn.focus.proxypool.model.ProxyLog;
 
 public class HttpClientUtil {
 	
@@ -76,12 +79,12 @@ public class HttpClientUtil {
     	return urlMap.get(name);
     }
     
-    public static List<ProxyPool> testProxyHttp(List<ProxyPool> proxyList, List<String> uagentList) throws ClientProtocolException, IOException {
+    public static List<ProxyPool> testProxyHttp(List<ProxyPool> proxyList, List<String> uagentList,int ProxyDB) throws ClientProtocolException, IOException {
     	List<ProxyPool> resList = new ArrayList<ProxyPool>();
 		for(ProxyPool proxy : proxyList) {
 			ProxyPool newproxy = new ProxyPool();
 			newproxy.copy(proxy);
-			int ret = testCommonHttp(proxy.getIp(), proxy.getPort(), proxy.getUrlname(), uagentList);
+			int ret = testCommonHttp(proxy, uagentList, ProxyDB);
 			newproxy.setStatus(ret);
 			resList.add(newproxy);
 		}
@@ -101,7 +104,58 @@ public class HttpClientUtil {
 		}
 		return resList;
     }*/
-	
+public static int testCommonHttp( ProxyPool proxy , List<String> uagentList, int ProxyDB){
+		
+
+		
+		String url = getUrl(proxy.getUrlname());
+		CloseableHttpClient httpclient = null;
+		ProxyLog PL = new ProxyLog(proxy,ProxyDB,"http");
+		try {
+			
+			RequestConfig defaultRequestConfig = RequestConfig.custom().build();     
+	        RequestConfig requestConfig = RequestConfig.copy(defaultRequestConfig)
+	        		.setConnectionRequestTimeout(PropertiesUtil.getHttpTimeout())
+	                .setConnectTimeout(PropertiesUtil.getHttpTimeout())
+	                .setSocketTimeout(PropertiesUtil.getHttpTimeout())
+	                .setProxy(new HttpHost(proxy.getIp(),proxy.getPort()))
+	                .build();
+	        
+	        //随机选取一个useragent
+	        Random rand = new Random();
+	        int randNum = rand.nextInt(uagentList.size());
+	        String uagent = uagentList.get(randNum);
+	        
+	        builder.setUserAgent(uagent);	   
+	        httpclient = builder.build();
+
+			
+    		if(null != url) {
+    			HttpGet httpget = new HttpGet(url);
+    	        httpget.setConfig(requestConfig);
+    	        PL.StartVerification();
+    	        CloseableHttpResponse response = httpclient.execute(httpget);
+    	       
+    	        int status = response.getStatusLine().getStatusCode(); 
+    	        PL.EndVerification(status);
+    	        
+    	        if(status == HttpStatus.SC_OK) {
+    	        	HttpEntity entity = response.getEntity();
+    	            if (entity != null) {
+    	            	return 1;
+    	            } 
+    	        }
+    		}
+    		
+        } catch (Exception e) {
+        	log.error("<proxy:HttpClientUtil> ip is " + proxy.getIp() + " port is " + proxy.getPort() + " urlname is " + url + " has an error, error message is " + e.getMessage(), e);
+        	System.out.println(e);
+		}finally {
+
+		}
+       
+		return -1;
+	}
 	public static int testCommonHttp(String ip, int port, String urlname, List<String> uagentList) {
            
 		String url = getUrl(urlname);
